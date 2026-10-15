@@ -10,6 +10,12 @@ const ALPHA_SHADER_PATH = "res://addons/waterways/shaders/system_renders/alpha.s
 var _camera : Camera
 var _container : Spatial
 
+func _set_camera_to_aabb(aabb : AABB) -> void:
+	var horizontal_size = max(aabb.size.x, aabb.size.z)
+	_camera.translation = aabb.position + Vector3(horizontal_size / 2.0, aabb.size.y + 1.0, horizontal_size / 2.0)
+	_camera.size = horizontal_size
+	_camera.far = aabb.size.y + 2.0
+
 func grab_height(water_objects, aabb : AABB, resolution : float) -> ImageTexture:
 	size = Vector2(resolution, resolution)
 	_camera = $Camera
@@ -27,19 +33,7 @@ func grab_height(water_objects, aabb : AABB, resolution : float) -> ImageTexture
 		water_mesh_copy.transform = object.transform
 		water_mesh_copy.material_override = height_mat
 	
-	var longest_axis := aabb.get_longest_axis_index()
-	match longest_axis:
-		Vector3.AXIS_X:
-			_camera.translation = aabb.position + Vector3(aabb.size.x / 2.0, aabb.size.y + 1.0, aabb.size.x / 2.0)
-		Vector3.AXIS_Y:
-			# TODO
-			# This shouldn't happen, we might need some code to handle if it does
-			pass
-		Vector3.AXIS_Z:
-			_camera.translation = aabb.position + Vector3(aabb.size.z / 2.0, aabb.size.y + 1.0, aabb.size.z / 2.0)
-	
-	_camera.size = aabb.get_longest_axis_size()
-	_camera.far = aabb.size.y + 2.0
+	_set_camera_to_aabb(aabb)
 	
 	render_target_clear_mode = CLEAR_MODE_ALWAYS
 	render_target_update_mode = Viewport.UPDATE_ONCE
@@ -72,18 +66,7 @@ func grab_alpha(water_objects, aabb : AABB, resolution : float) -> ImageTexture:
 		water_mesh_copy.transform = object.transform
 		water_mesh_copy.material_override = alpha_mat
 	
-	var longest_axis := aabb.get_longest_axis_index()
-	match longest_axis:
-		Vector3.AXIS_X:
-			_camera.translation = aabb.position + Vector3(aabb.size.x / 2.0, aabb.size.y + 1.0, aabb.size.x / 2.0)
-		Vector3.AXIS_Y:
-			# This shouldn't happen, we might need some code to handle if it does
-			pass
-		Vector3.AXIS_Z:
-			_camera.translation = aabb.position + Vector3(aabb.size.z / 2.0, aabb.size.y + 1.0, aabb.size.z / 2.0)
-	
-	_camera.size = aabb.get_longest_axis_size()
-	_camera.far = aabb.size.y + 2.0
+	_set_camera_to_aabb(aabb)
 	
 	render_target_clear_mode = CLEAR_MODE_ALWAYS
 	render_target_update_mode = Viewport.UPDATE_ONCE
@@ -124,18 +107,7 @@ func grab_flow(water_objects, aabb : AABB, resolution : float) -> ImageTexture:
 		water_mesh_copy.material_override.set_shader_param("flow_max", water_objects[i].get_shader_param("flow_max"))
 		water_mesh_copy.material_override.set_shader_param("valid_flowmap", water_objects[i].get_shader_param("i_valid_flowmap"))
 	
-	var longest_axis := aabb.get_longest_axis_index()
-	match longest_axis:
-		Vector3.AXIS_X:
-			_camera.translation = aabb.position + Vector3(aabb.size.x / 2.0, aabb.size.y + 1.0, aabb.size.x / 2.0)
-		Vector3.AXIS_Y:
-			# This shouldn't happen, we might need some code to handle if it does
-			pass
-		Vector3.AXIS_Z:
-			_camera.translation = aabb.position + Vector3(aabb.size.z / 2.0, aabb.size.y + 1.0, aabb.size.z / 2.0)
-	
-	_camera.size = aabb.get_longest_axis_size()
-	_camera.far = aabb.size.y + 2.0
+	_set_camera_to_aabb(aabb)
 	
 	render_target_clear_mode = CLEAR_MODE_ALWAYS
 	render_target_update_mode = Viewport.UPDATE_ONCE

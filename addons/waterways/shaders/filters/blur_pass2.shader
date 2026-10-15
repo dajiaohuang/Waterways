@@ -5,6 +5,9 @@ uniform sampler2D input_texture;
 uniform float blur = 0.1;
 
 vec4 fct(vec2 uv) {
+	if (blur <= 0.0) {
+		return textureLod(input_texture, uv, 0.0);
+	}
 	float e = 1.0 / size;
 	vec4 rv = vec4(0.0);
 	float sum = 0.0;

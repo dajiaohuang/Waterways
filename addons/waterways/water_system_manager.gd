@@ -153,7 +153,7 @@ func get_water_altitude(query_pos : Vector3) -> float:
 		return query_pos.y - minimum_water_level
 	var position_in_aabb = query_pos - _system_aabb.position
 	var pos_2d = Vector2(position_in_aabb.x, position_in_aabb.z)
-	pos_2d = pos_2d / _system_aabb.get_longest_axis_size()
+	pos_2d = pos_2d / max(_system_aabb.size.x, _system_aabb.size.z)
 	if pos_2d.x > 1.0 or pos_2d.x < 0.0 or pos_2d.y > 1.0 or pos_2d.y < 0.0:
 		# We are outside the aabb of the Water System
 		return query_pos.y - minimum_water_level
@@ -174,7 +174,7 @@ func get_water_flow(query_pos : Vector3) -> Vector3:
 		return Vector3.ZERO
 	var position_in_aabb = query_pos - _system_aabb.position
 	var pos_2d = Vector2(position_in_aabb.x, position_in_aabb.z)
-	pos_2d = pos_2d / _system_aabb.get_longest_axis_size()
+	pos_2d = pos_2d / max(_system_aabb.size.x, _system_aabb.size.z)
 	if pos_2d.x > 1.0 or pos_2d.x < 0.0 or pos_2d.y > 1.0 or pos_2d.y < 0.0:
 		return Vector3.ZERO
 	
